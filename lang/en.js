@@ -11,7 +11,7 @@ module.exports = {
         enabled: 'ENABLED',
         disabled: 'DISABLED',
         notYourButton: 'This button is not for you.',
-        supportMsg: '❤️ Help the developer: ko-fi.com/chiraitori | github.com/sponsors/chiraitori | paypal.me/chiraitori'
+        supportMsg: '❤️ Help the developer: Bhimsainik Bot'
     },
     welcome: {
         title: 'Thanks for Adding HoYo Code Sender!',
@@ -162,7 +162,7 @@ module.exports = {
                 '• `/livestreamcodesetup` - Configure livestream code channel\n' +
                 '• `/setlang` - Change bot language (English/Vietnamese/Japanese)\n' +
                 '• `/dashboard` - Open the web dashboard\n' +
-                '• `/vote` - Vote for the bot on Top.gg\n' +
+                '' +
                 '• `/help` - Show this help message\n' +
                 '• `/about` - Information about the bot',
             tipsHeader: '💡 Tips & Tricks',
@@ -183,7 +183,6 @@ module.exports = {
             sourceCode: 'Source Code',
             inviteLink: 'Invite Link',
             supportServer: 'Support Server',
-            vote: 'Vote for the bot',
             github: 'GitHub Repository',
             devbio: 'Developer Bio',
             donate: 'Donate',
@@ -200,31 +199,6 @@ module.exports = {
             requirementsList: '• Discord account login\n• Server administrator permissions\n• Bot must be in your server',
             footer: 'Manage your bot settings easily with our web dashboard!',
             error: 'Error loading dashboard information.'
-        },
-        vote: {
-            title: 'Vote for HoYo Code Sender',
-            description: 'Support the bot by voting on Top.gg! Your vote helps us reach more servers and improve the bot.',
-            status: 'Vote Status',
-            hasVoted: '✅ You have voted recently! Thank you for your support.',
-            hasNotVoted: '❌ You haven\'t voted in the last 12 hours.',
-            link: 'Vote on Top.gg',
-            error: 'Error checking vote status.',
-            voteAgain: 'You can vote again in 12 hours.',
-            thankTitle: 'Thank You for Your Vote! 🎉',
-            thankMessage: 'Thank you for supporting HoYo Code Sender on Top.gg! Your vote helps us grow and reach more users.',
-            dmThankTitle: 'Thank You for Your Vote!',
-            dmThankMessage: 'Thank you for voting for HoYo Code Sender on Top.gg! Your support means a lot to us.'
-        },
-        deletesetup: {
-            noPermission: 'You do not have permission to use this command.',
-            loading: 'Deleting server configuration...',
-            success: 'Server configuration has been successfully deleted.',
-            noConfig: 'No configuration found for this server.',
-            error: 'An error occurred while deleting server configuration.',
-            deletedItems: 'Deleted items:',
-            deletedConfig: 'Channel and role settings',
-            deletedSettings: 'Notification settings',
-            deletedLanguage: 'Language settings'
         },
         togglegame: {
             noPermission: 'You do not have permission to use this command.',
