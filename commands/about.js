@@ -8,7 +8,7 @@ module.exports = {
 
     async execute(interaction) {
         try {
-            const client_id = process.env.CLIENT_ID;
+            const client_id = process.env.CLIENT_ID || '1459493669760536697';
             const embed = new EmbedBuilder()
                 .setColor('#00FF00')
                 .setTitle(await languageManager.getString('commands.about.title', interaction.guildId))
@@ -20,7 +20,7 @@ module.exports = {
                     },
                     {
                         name: await languageManager.getString('commands.about.sourceCode', interaction.guildId),
-                        value: '[GitHub](https://github.com/chiraitori/HoYo_Code_Sender_Discord_Bot)'
+                        value: '[GitHub](https://github.com/bhimsainik)'
                     },
                     {
                         name: await languageManager.getString('commands.about.supportServer', interaction.guildId),
@@ -28,21 +28,13 @@ module.exports = {
                     },
                     {
                         name: await languageManager.getString('commands.about.inviteLink', interaction.guildId),
-                        value: `[Invite](https://discord.com/oauth2/authorize?client_id=${client_id}&permissions=2416331856&scope=applications.commands%20bot)`
+                        value: `[Invite](https://discord.com/oauth2/authorize?client_id=1459493669760536697&permissions=2416331856&scope=applications.commands%20bot)`
                     },
+
                     {
-                        name: await languageManager.getString('commands.about.donate', interaction.guildId),
-                        value: '[Buy me a coffee](https://ko-fi.com/chiraitori)'
-                    },
-                    {
-                        name: await languageManager.getString('commands.about.sponsor', interaction.guildId) || 'GitHub Sponsors',
-                        value: '[GitHub Sponsors](https://github.com/sponsors/chiraitori)'
-                    },
-                    {
-                        name: await languageManager.getString('commands.about.devbio', interaction.guildId),
-                        value: '[Bio Link](https://chiraitori.me)'
+                        name: 'Developer',
+                        value: 'Bhimsainik'
                     }
-                    
                 )
                 .setTimestamp();
 

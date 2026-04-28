@@ -10,19 +10,9 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('setup')
         .setDescription('Setup roles and channel for code notifications')
-        // Remove the default permissions restriction to make command visible to everyone
-        // Admin permissions will be enforced in the execute function
         .addRoleOption(option => 
             option.setName('genshin_role')
                 .setDescription('Role for Genshin Impact notifications')
-                .setRequired(true))
-        .addRoleOption(option => 
-            option.setName('hsr_role')
-                .setDescription('Role for Honkai: Star Rail notifications')
-                .setRequired(true))
-        .addRoleOption(option => 
-            option.setName('zzz_role')
-                .setDescription('Role for Zenless Zone Zero notifications')
                 .setRequired(true))
         .addChannelOption(option =>
             option.setName('channel')
@@ -31,7 +21,15 @@ module.exports = {
         .addBooleanOption(option =>
             option.setName('auto_send')
                 .setDescription('Enable automatic code sending')
-                .setRequired(true)),
+                .setRequired(true))
+        .addRoleOption(option => 
+            option.setName('hsr_role')
+                .setDescription('Role for Honkai: Star Rail notifications')
+                .setRequired(false))
+        .addRoleOption(option => 
+            option.setName('zzz_role')
+                .setDescription('Role for Zenless Zone Zero notifications')
+                .setRequired(false)),
 
     async execute(interaction) {
         // Check if command is used in DMs
@@ -56,22 +54,19 @@ module.exports = {
             const zzzRole = interaction.options.getRole('zzz_role');
             const channel = interaction.options.getChannel('channel');
             
-            // Get auto_send option directly as boolean
             const enableAutoSend = interaction.options.getBoolean('auto_send');
 
-            // Custom channel validation using our new validateChannel function
-            // First, save channel ID temporarily to check with validateChannel
+            // Save channel ID temporarily to check with validateChannel
             const tempConfig = await Config.findOneAndUpdate(
                 { guildId: interaction.guildId },
                 { channel: channel.id },
                 { upsert: true, new: true }
             );
 
-            // Validate channel using our utility function
+            // Validate channel
             const validationResult = await validateChannel(interaction.client, interaction.guildId);
             
             if (!validationResult.isValid) {
-                // If channel validation fails, provide a detailed error message in an embed
                 const channelErrorMsg = await languageManager.getString(
                     'commands.setup.error.channelValidation',
                     interaction.guildId
@@ -91,30 +86,30 @@ module.exports = {
                 return interaction.editReply({ embeds: [errorEmbed] });
             }
             
-            // If validation passed, update the full configuration
+            // Build update object — only set hsr/zzz roles if provided
+            const updateData = {
+                genshinRole: genshinRole.id,
+                channel: channel.id,
+                'notifications.channelMissing.notified': false,
+                'notifications.channelMissing.lastNotified': null,
+                'notifications.permissionMissing.notified': false,
+                'notifications.permissionMissing.lastNotified': null,
+                'notifications.permissionMissing.permission': null
+            };
+
+            if (hsrRole) updateData.hsrRole = hsrRole.id;
+            if (zzzRole) updateData.zzzRole = zzzRole.id;
+
             await Config.findOneAndUpdate(
                 { guildId: interaction.guildId },
-                {
-                    genshinRole: genshinRole.id,
-                    hsrRole: hsrRole.id,
-                    zzzRole: zzzRole.id,
-                    channel: channel.id,
-                    // Reset notification flags since setup is successful
-                    'notifications.channelMissing.notified': false,
-                    'notifications.channelMissing.lastNotified': null,
-                    'notifications.permissionMissing.notified': false,
-                    'notifications.permissionMissing.lastNotified': null,
-                    'notifications.permissionMissing.permission': null
-                },
+                updateData,
                 { upsert: true, new: true }
             );
             
-            // Enable or disable auto-send in settings based on the option
             await Settings.findOneAndUpdate(
                 { guildId: interaction.guildId },
                 { 
                     autoSendEnabled: enableAutoSend,
-                    // Reset channelStatus as we've just validated it
                     'channelStatus.isInvalid': false,
                     'channelStatus.lastError': null,
                     'channelStatus.lastChecked': new Date()
@@ -122,18 +117,15 @@ module.exports = {
                 { upsert: true, new: true }
             );
 
-            // Get translated strings for the success message
             const successMessage = await languageManager.getString(
                 'commands.setup.success',
                 interaction.guildId
             ) || "Server configuration completed successfully!";
             
-            // Get translated game names
             const genshin = await languageManager.getString('games.genshin', interaction.guildId) || "Genshin Impact";
             const hsr = await languageManager.getString('games.hkrpg', interaction.guildId) || "Honkai: Star Rail";
             const zzz = await languageManager.getString('games.nap', interaction.guildId) || "Zenless Zone Zero";
             
-            // Get translated UI elements
             const readyMessage = await languageManager.getString('commands.setup.readyMessage', interaction.guildId) || 
                 "Your server is now ready to receive code notifications!";
             const rolesHeader = await languageManager.getString('commands.setup.rolesHeader', interaction.guildId) || 
@@ -143,7 +135,6 @@ module.exports = {
             const autoSendHeader = await languageManager.getString('commands.setup.autoSendHeader', interaction.guildId) || 
                 "⚙️ Auto-send Feature";
             
-            // Create a success embed
             const successEmbed = new EmbedBuilder()
                 .setColor('#00FF00')
                 .setTitle('✅ ' + successMessage)
@@ -151,18 +142,13 @@ module.exports = {
                 .setTimestamp()
                 .setFooter({ text: `Server: ${interaction.guild.name}` });
                 
-            // Format role information for embed fields
-            const roles = [
-                { role: genshinRole, type: genshin, emoji: '<:genshin:1368073403231375430> ' },
-                { role: hsrRole, type: hsr, emoji: '<:hsr:1368073099756703794> ' },
-                { role: zzzRole, type: zzz, emoji: '<:zzz:1368073452174704763> ' }
-            ];
+            // Build roles field — show only configured roles
+            let roleLines = `<:genshin:1498627543857631232> ${genshin}: ${genshinRole}`;
+            if (hsrRole) roleLines += `\n<:hsr:1498627652788158616> ${hsr}: ${hsrRole}`;
+            if (zzzRole) roleLines += `\n<:zzz:1498628264854421535> ${zzz}: ${zzzRole}`;
 
-            // Add roles field
-            const roleLines = roles.map(({ role, type, emoji }) => `${emoji}${type}: ${role}`).join('\n');
             successEmbed.addFields({ name: rolesHeader, value: roleLines });
             
-            // Add channel field with validation success
             const channelValidMsg = await languageManager.getString(
                 'commands.setup.channelValidation',
                 interaction.guildId
@@ -173,7 +159,6 @@ module.exports = {
                 value: `${channel}\n${channelValidMsg}` 
             });
             
-            // Add auto-send status field
             const autoSendStatus = enableAutoSend ? 
                 await languageManager.getString('common.enabled', interaction.guildId) || 'ENABLED' : 
                 await languageManager.getString('common.disabled', interaction.guildId) || 'DISABLED';
@@ -182,7 +167,6 @@ module.exports = {
                 value: autoSendStatus
             });
             
-            // Add tip to test the setup with demoautosend command
             const demoTipHeader = await languageManager.getString(
                 'commands.setup.demoTipHeader',
                 interaction.guildId
