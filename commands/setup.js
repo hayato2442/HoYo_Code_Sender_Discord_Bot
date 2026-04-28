@@ -145,7 +145,7 @@ module.exports = {
             // Build roles field — show only configured roles
             let roleLines = `<:genshin:1498627543857631232> ${genshin}: ${genshinRole}`;
             if (hsrRole) roleLines += `\n<:hsr:1498627652788158616> ${hsr}: ${hsrRole}`;
-            if (zzzRole) roleLines += `\n<:zzz:1498628264854421535> ${zzz}: ${zzzRole}`;
+            if (zzzRole) roleLines += `\n<:zzz1:1498628264854421535> ${zzz}: ${zzzRole}`;
 
             successEmbed.addFields({ name: rolesHeader, value: roleLines });
             

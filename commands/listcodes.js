@@ -42,9 +42,9 @@ module.exports = {
             
             // Get game emojis
             const gameEmojis = {
-                'genshin': '<:genshin:1368073403231375430>',
-                'hkrpg': '<:hsr:1368073099756703794>',
-                'nap': '<:zzz:1368073452174704763>'
+                'genshin': '<:genshin:1498627543857631232>',
+                'hkrpg': '<:hsr:1498627652788158616>',
+                'nap': '<:zzz1:1498628264854421535>'
             };
             
             if (!response.data?.codes?.length) {

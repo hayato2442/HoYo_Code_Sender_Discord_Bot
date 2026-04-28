@@ -20,7 +20,7 @@ module.exports = {
                     },
                     {
                         name: await languageManager.getString('commands.about.sourceCode', interaction.guildId),
-                        value: '[GitHub](https://github.com/bhimsainik)'
+                        value: '[GitHub](https://github.com/chiraitori/HoYo_Code_Sender_Discord_Bot)'
                     },
                     {
                         name: await languageManager.getString('commands.about.supportServer', interaction.guildId),
@@ -34,6 +34,10 @@ module.exports = {
                     {
                         name: 'Developer',
                         value: 'Bhimsainik'
+                    },
+                    {
+                        name: 'Bio Links',
+                        value: '[bhimsainik.ccwu.cc](https://bhimsainik.ccwu.cc/)\n[bhimsainik.qzz.io](https://bhimsainik.qzz.io)'
                     }
                 )
                 .setTimestamp();

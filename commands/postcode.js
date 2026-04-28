@@ -10,9 +10,9 @@ const gameNames = {
 };
 
 const gameEmojis = {
-    'genshin': '<:genshin:1368073403231375430>',
-    'hsr': '<:hsr:1368073099756703794>',
-    'zzz': '<:zzz:1368073452174704763>'
+    'genshin': '<:genshin:1498627543857631232>',
+    'hsr': '<:hsr:1498627652788158616>',
+    'zzz': '<:zzz1:1498628264854421535>'
 };
 
 const postcodeUrls = {
